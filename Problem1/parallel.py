@@ -1,9 +1,7 @@
 from multiprocessing import Process, Value, Array, Event
 import time
 
-size_problem = 1000000
-
-def quad_cost3(l,e,ev1,ev2,max_iter):
+def quad_cost3(l,e,ev1,ev2,max_iter,size_problem):
 	for i in range(max_iter):
 		for i in range(size_problem):
 			a=1
@@ -14,7 +12,7 @@ def quad_cost3(l,e,ev1,ev2,max_iter):
 		
 	
 
-def quad_cost4(l,e,ev3,ev4,max_iter):
+def quad_cost4(l,e,ev3,ev4,max_iter,size_problem):
 	for i in range(max_iter):
 		for i in range(size_problem):
 			a=1
@@ -33,7 +31,7 @@ def combiner(l,alpha,ep1,ep2,ev1,ev2,ev3,ev4,max_iter):
 		ev2.set()
 		ev4.set()
 		
-def perf_parallel(max_iter,alpha):
+def perf_parallel(max_iter,size_problem,alpha):
 	event1 = Event()
 	event2 = Event()
 	event3 = Event()
@@ -43,8 +41,8 @@ def perf_parallel(max_iter,alpha):
 	lamb = Value('d',1.0)
 
 	beg = time.time()
-	d1 = Process(target=quad_cost3,args=(lamb,eps1,event1,event2,max_iter))
-	d2 = Process(target=quad_cost4,args=(lamb,eps2,event3,event4,max_iter))
+	d1 = Process(target=quad_cost3,args=(lamb,eps1,event1,event2,max_iter,size_problem))
+	d2 = Process(target=quad_cost4,args=(lamb,eps2,event3,event4,max_iter,size_problem))
 	d3 = Process(target=combiner,args=(lamb,alpha,eps1,eps2,event1,event2,event3,event4,max_iter))
 	
 	d1.start()

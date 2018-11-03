@@ -1,5 +1,6 @@
 #Gausssian elimination to solve linear equations.
 #Does not take advantage of any structure of A matrix.
+#Source https://martin-thoma.com/solving-linear-equations-with-gaussian-elimination/
 
 def gauss(A):
     n = len(A)

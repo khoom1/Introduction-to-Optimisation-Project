@@ -2,13 +2,14 @@ from multiprocessing import Process, Pipe
 import time
 import numpy as np
 from copy import deepcopy
+from mygauss import gauss
 	
 def quad_cost3(conn1,max_iter,A1,b1):
 	coef_vect = deepcopy(b1)
 	for i in range(max_iter):
 		lamb = conn1.recv()
 		coef_vect[-1] = b1[-1] + lamb
-		x = np.linalg.solve(A1,coef_vect)
+		x = gauss(np.concatenate((A1,coef_vect),axis=1))
 		conn1.send(x[-1])
 		
 		
@@ -17,7 +18,7 @@ def quad_cost4(conn3,max_iter,A2,b2):
 	for i in range(max_iter):
 		lamb = conn3.recv()
 		coef_vect[0] = b2[0] -lamb
-		x = np.linalg.solve(A2,coef_vect)
+		x = gauss(np.concatenate((A2,coef_vect),axis=1))
 		conn3.send(x[0])
 		
 	
@@ -48,4 +49,4 @@ def perf_parallel(max_iter,alpha,A1,A2,b1,b2):
 	
 	end = time.time()
 	print("Dual decomposition in parallel takes %fs." %(end-begin))
-	
+	print(v1)

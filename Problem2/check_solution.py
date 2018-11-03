@@ -1,5 +1,6 @@
 import time
 import numpy as np
+from mygauss import gauss
 
 def augment_matrices(A1,A2):
 	size1 = len(A1)
@@ -32,7 +33,8 @@ def perf_check(max_iter,alpha,A1,A2,b1,b2):
 	size = len(b)
 
 	begin = time.time()
-	x = np.linalg.solve(A,b)
+	x = gauss(np.concatenate((A,b),axis=1))
 	end = time.time()
 	print("No decomposition takes %fs." %(end-begin))
 	
+	print(x[len(b1)-1])

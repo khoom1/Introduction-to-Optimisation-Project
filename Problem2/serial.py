@@ -1,18 +1,18 @@
 import time
 import numpy as np
 from copy import deepcopy
+from mygauss import gauss
 
 def quad_cost1(lamb,A1,b1):
 	coef_vect = deepcopy(b1)
-	
 	coef_vect[-1] = b1[-1] + lamb
-	x = np.linalg.solve(A1,coef_vect)
+	x = gauss(np.concatenate((A1,coef_vect),axis=1))
 	return x[-1]
 
 def quad_cost2(lamb,A2,b2):
 	coef_vect = deepcopy(b2)
 	coef_vect[0] = b2[0] - lamb
-	x = np.linalg.solve(A2,coef_vect)
+	x = gauss(np.concatenate((A2,coef_vect),axis=1))
 	return x[0]
 	
 def perf_serial(max_iter,alpha,A1,A2,b1,b2):
@@ -27,3 +27,5 @@ def perf_serial(max_iter,alpha,A1,A2,b1,b2):
 	
 	end = time.time()
 	print("Dual decomposition in series takes %fs." %(end-begin))
+	
+	print(eps1)

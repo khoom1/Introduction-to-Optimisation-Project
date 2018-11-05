@@ -36,7 +36,7 @@ def do_parallel(max_iter,step_size,incidence_matrix,s,t):
 	begin = time.time()
 	pool = Pool()
 	for k in range(max_iter):
-		result = pool.imap(argm, [(incidence_matrix.getcol(i),alpha,beta) for i in range(num_edges)])
+		result = pool.map(argm, [(incidence_matrix.getcol(i),alpha,beta) for i in range(num_edges)])
 		#pool.close()
 		#pool.join()
 		temp = np.array(list(result))

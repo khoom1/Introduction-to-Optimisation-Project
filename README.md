@@ -19,5 +19,6 @@ Problems 1, 2 and 3 explore the convergence of the decomposed problem to the min
 
 Problem 4 then explores the convergence of the decomposed problem to the minimum of the original separable cost function given the size of messages passed between processes is limited to only a small number of bits.
 
+Each folder has its own README file that explains the findings of each problem in more detail.
 
 

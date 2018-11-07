@@ -15,9 +15,9 @@ The purpose of this project is to demonstrate two aspects of using the method of
 
 ## Overview of This Project
 
-Problems 1, 2 and 3 explore the convergence of the minima of the decomposed problem to the minimum of the original separable problem. The goal here is to demonstrate the trade-off between parallel and serial computing, as well as the trade-off between separating the cost function vs. not separating the cost function.
+Problems 1, 2 and 3 explore the convergence of the decomposed problem to the minimum of the original separable problem. The goal here is to demonstrate the trade-off between parallel and serial computing, as well as the trade-off between separating the cost function vs. not separating the cost function.
 
-Problem 4 then explores the convergence of the minima of the decomposed problem to the minimum of the original separable cost function given the size of messages passed between processes is limited to only a small number of bits.
+Problem 4 then explores the convergence of the decomposed problem to the minimum of the original separable cost function given the size of messages passed between processes is limited to only a small number of bits.
 
 
 

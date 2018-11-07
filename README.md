@@ -8,4 +8,8 @@ The purpose of this project is to demonstrate the method of dual decomposition i
 
 ## Background
 
+### Separable Problem
+
+$$E=mc^2$$
+
 ## Overview of This Project

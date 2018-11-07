@@ -6,9 +6,9 @@ The purpose of this project is to demonstrate two aspects of using the method of
 
 ## Background
 
-###Separable Cost Function
+### Separable Cost Function
 
-###Parallel Computing
+### Parallel Computing
 
 
 

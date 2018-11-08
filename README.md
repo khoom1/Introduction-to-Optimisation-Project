@@ -6,8 +6,6 @@ The purpose of this project is to demonstrate two aspects of using the method of
 
 ## Background
 
-<img src="https://latex.codecogs.com/svg.latex?\lambda" />
-
 ### Separable Cost Function
 
 The following separable unconstrained problem will be considered:

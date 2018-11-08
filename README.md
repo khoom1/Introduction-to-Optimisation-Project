@@ -33,12 +33,11 @@ The method of dual decomposition is simply making use of the fact that the dual 
 can instead be done by two individual agents separately finding the minimisers
 
 <img src="https://latex.codecogs.com/svg.latex?(x_1,\xi_1)\in\arg\min_{x_1,\xi_1}[f_1(x_1,\xi_1)-\lambda^\top(\xi_1)]" />
-<img src="https://latex.codecogs.com/svg.latex?(x_2,\xi_2)\in\arg\min_{x_2,\xi_2}[f_2(x_2,\xi_2)+\lambda^\top(\xi_2)]" />.
-
+<img src="https://latex.codecogs.com/svg.latex?(x_2,\xi_2)\in\arg\min_{x_2,\xi_2}[f_2(x_2,\xi_2)+\lambda^\top(\xi_2)]." />
 
 ### Parallel Computing
 
-
+The `multiprocessing` module on Python was used to execute processes in parallel. A key point is that to simulate different agents separately executing tasks, this is better reflected by spawning parallel processes rather than threads.
 
 
 ## Overview of This Project
@@ -47,6 +46,6 @@ Problems 1, 2 and 3 explore the convergence of the decomposed problem to the min
 
 Problem 4 then explores the convergence of the decomposed problem to the minimum of the original separable cost function given the size of messages passed between processes is limited to only a small number of bits.
 
-Each folder has its own README file that explains the findings of each problem in more detail.
+Each folder has its own README.pdf file that explains the findings of each problem in more detail.
 
 

@@ -3,9 +3,9 @@ import time
 from serial import perf_serial
 from parallel import perf_parallel
 
-max_iter = 1000
+max_iter = 100
 alpha = 0.1
-size_problem = 100000
+size_problem = 1000000
 
 	
 

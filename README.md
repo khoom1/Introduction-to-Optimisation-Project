@@ -24,7 +24,7 @@ We seek a <img src="https://latex.codecogs.com/svg.latex?\lambda" /> that maximi
 
 * finding <img src="https://latex.codecogs.com/svg.latex?(x_1,\xi_1,x_2,\xi_2)\in\arg\min\limits_{x_1,\xi_1,x_2,\xi_2}[f_1(x_1,\xi_1)+f_2(x_2,\xi_2)-\lambda^\top(\xi_1-\xi_2)]" />, and
 
-* updating <img src="https://latex.codecogs.com/svg.latex?\lambda_{k+1}=\lambda_k-\alpha_k(\xi_1-\xi_2)" />
+* updating <img src="https://latex.codecogs.com/svg.latex?\lambda_{k+1}=\lambda_k-\alpha_k(\xi_1-\xi_2)" />, where <img src="https://latex.codecogs.com/svg.latex?\alpha_k" /> is the step size.
 
 The method of dual decomposition is simply making use of the fact that the dual function can be decomposed into <img src="https://latex.codecogs.com/svg.latex?q_1(\lambda)" /> and <img src="https://latex.codecogs.com/svg.latex?q_2(\lambda)" /> as shown above, and so finding
 

@@ -27,14 +27,15 @@ def augment_vect(b1,b2):
 
 	return b
 
-def perf_check(max_iter,alpha,A1,A2,b1,b2):
+def do_check(A1,A2,b1,b2,verbose=False):
 	A = augment_matrices(A1,A2)
 	b = augment_vect(b1,b2)
-	size = len(b)
 
 	begin = time.time()
 	x = gauss(np.concatenate((A,b),axis=1))
 	end = time.time()
-	print("No decomposition takes %fs." %(end-begin))
 	
-	print(x[len(b1)-1])
+	if verbose:
+		print("No decomposition takes %fs." %(end-begin))
+	
+	return x[len(b1)-1], end-begin

@@ -1,4 +1,5 @@
 from multiprocessing import Process, Pipe
+import numpy as np
 import time
 
 def quad_cost1(conn1,max_iter,size_problem):
@@ -18,29 +19,30 @@ def quad_cost2(conn3,max_iter,size_problem):
 		eps2 = -lamb/2
 		conn3.send(eps2)	
 		
-def perf_parallel(max_iter,size_problem,alpha):
+def do_parallel(max_iter,alpha,size_problem=0,verbose=False):
 	conn1, conn2 = Pipe()
 	conn3, conn4 = Pipe()
 	lamb = 1.0
-
-	beg = time.time()
+	eps1 = np.zeros((max_iter,1))
+	eps2 = np.zeros((max_iter,1))
+	
+	begin = time.time()
 	d1 = Process(target=quad_cost1,args=(conn1,max_iter,size_problem))
 	d2 = Process(target=quad_cost2,args=(conn3,max_iter,size_problem))
-	
 	d1.start()
 	d2.start()
-	
 	for i in range(max_iter):
 		conn2.send(lamb)
 		conn4.send(lamb)
-		eps1 = conn2.recv()
-		eps2 = conn4.recv()
-		lamb = lamb - alpha*(eps1-eps2)
-		
+		eps1[i] = conn2.recv()
+		eps2[i] = conn4.recv()
+		lamb = lamb - alpha*(eps1[i]-eps2[i])
 	d1.join()
 	d2.join()
-	
-
-	print(eps1-eps2)
 	end = time.time()
-	print(end-beg)
+	
+	if verbose:
+		print(f"Size of dummy for-loop is {size_problem:d} iterations.",end=" ")
+		print(f"Parallel computing takes {end-begin:f}s.")
+	
+	return eps1,eps2,end-begin

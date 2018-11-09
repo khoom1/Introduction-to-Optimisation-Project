@@ -7,7 +7,7 @@ if __name__=='__main__':
 	# Plot convergence of the shared variable x_3
 	max_iter = 100
 	alpha = 0.1
-	par_eps1, par_eps2, time2 = do_parallel(max_iter,alpha)
+	par_eps1, par_eps2, _ = do_parallel(max_iter,alpha)
 	plt.figure(1)
 	plt.plot(range(max_iter),par_eps1,label="Found By Agent 1")
 	plt.plot(range(max_iter),par_eps2,label="Found By Agent 2")

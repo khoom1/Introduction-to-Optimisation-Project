@@ -55,7 +55,7 @@ if __name__=='__main__':
 	
 	# Run tests to compare the completion times of parallel and serial
 	# computation for increasing problem size.
-	num_tests = 0
+	num_tests = 15
 	size_problem = [i+13 for i in range(num_tests)]
 	time1 = np.zeros((num_tests,1))
 	time2 = np.zeros((num_tests,1))

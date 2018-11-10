@@ -48,4 +48,4 @@ Problem 4 then explores the convergence of the decomposed problem to the minimum
 
 Each folder has its own README.pdf file that explains the findings of each problem in more detail as well as how to run the functions.
 
-In terms of hardware, a 2.90GHz Intel i7-7500U CPU with 2 cores (4 logical processors) was used in each problem. This was sufficient for the purpose of Problems 1, 2, and 4 where only two agents are being simulated, but Problem 3 involves a much larger number of agents. The discussion in the Problem 3 README file elaborate on the implications of that in more detail.
+In terms of hardware, a 2.90GHz Intel i7-7500U CPU with 2 cores (4 logical processors) was used in each problem. This was sufficient for the purpose of Problems 1, 2, and 4 where only two agents need to be simulated, but Problem 3 involves a much larger number of agents. The discussion in the Problem 3 README file elaborate on the implications of this in more detail.

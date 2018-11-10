@@ -22,10 +22,7 @@ def quad_cost4(conn3,max_iter,A2,b2):
 		conn3.send(x)
 		
 	
-def do_precise(max_iter,alpha,A1,A2,b1,b2,xstar):
-	size1 = len(b1)
-	size2 = len(b2)
-	
+def do_precise(max_iter,alpha,A1,A2,b1,b2,xstar,verbose=False):
 	error = np.zeros((max_iter,1))
 	lamb = 1.0
 	conn1, conn2 = Pipe()
@@ -34,23 +31,22 @@ def do_precise(max_iter,alpha,A1,A2,b1,b2,xstar):
 	begin = time.time()
 	d1 = Process(target=quad_cost3,args=(conn1,max_iter,A1,b1))
 	d2 = Process(target=quad_cost4,args=(conn3,max_iter,A2,b2))
-	
 	d1.start()
 	d2.start()
-	
 	for i in range(max_iter):
 		conn2.send(lamb)
 		conn4.send(lamb)
 		v1 = conn2.recv()
 		v2 = conn4.recv()
 		lamb = lamb - alpha*(v1[-1]-v2[0])
-		error[i] = np.linalg.norm(np.subtract(v1+v2,xstar))
-
+		error[i] = np.linalg.norm(np.subtract(v1[:-1]+[v1[-1]/2+v2[0]/2]+v2[1:],xstar))
 	d1.join()
 	d2.join()
-	
 	end = time.time()
-	print("Dual decomposition in parallel takes %fs." %(end-begin))
+	
+	if verbose:
+		print("Dual decomposition in parallel takes %fs." %(end-begin))
+		
 	return error
 	
 	

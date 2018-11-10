@@ -1,5 +1,3 @@
-from multiprocessing import Process, Value, Array
-import time
 from precise import do_precise
 from check_solution import do_check
 from imprecise import do_imprecise
@@ -27,11 +25,14 @@ def create_vect(size):
 
 
 if __name__=='__main__':
+	# Vary these limits
+	lambda_word_limit = 100
+	eps_word_limit = 3
+	
 	max_iter = 1000
 	alpha = 0.1
-	size1 = 3
-	size2 = 5
-	binary_frac_bits = 100
+	size1 = 10
+	size2 = 15
 	print("Generating an example problem...")
 	A1 = create_pos_matrix(size1)
 	A2 = create_pos_matrix(size2)
@@ -39,11 +40,17 @@ if __name__=='__main__':
 	b2 = create_vect(size2)
 	print("Done generating matrices.")
 	
-	xstar = do_check(max_iter,alpha,A1,A2,b1,b2)
-	xstar.insert(size1,xstar[size1-1])
+	xstar = do_check(A1,A2,b1,b2)
+	#xstar.insert(size1,xstar[size1-1])
 	error_from_precise = do_precise(max_iter,alpha,A1,A2,b1,b2,xstar)
-	error_from_imprecise = do_imprecise(max_iter,alpha,A1,A2,b1,b2,xstar,binary_frac_bits)
+	error_from_imprecise = do_imprecise(max_iter,alpha,A1,A2,b1,b2,xstar,lambda_word_limit,eps_word_limit)
 	
-	
-	plt.plot(range(max_iter),error_from_precise,'b--',range(max_iter),error_from_imprecise,'r--')
+	plt.figure(1)
+	plt.plot(range(max_iter),error_from_precise,'b--',label="No word limit")
+	plt.plot(range(max_iter),error_from_imprecise,'r--',label=f"$\lambda$ word limit {lambda_word_limit:d}, $\epsilon$ word limit {eps_word_limit:d}")
+	plt.title("Convergence of private and shared variables to their optimal values")
+	plt.xlabel("Number of iterations")
+	plt.ylabel("||x-x^*||_2")
+	plt.legend()
 	plt.show()
+	

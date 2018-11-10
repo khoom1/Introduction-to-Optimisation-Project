@@ -9,12 +9,7 @@
 \setlength{\parskip}{1em}
 \usepackage{cancel}
 \usepackage{longtable}
-\usepackage{algorithm}
-\usepackage{algpseudocode}
-\usepackage{pgf,tikz,pgfplots}
-\pgfplotsset{compat=1.15}
 \usepackage{mathrsfs}
-\usetikzlibrary{arrows}
 \pagestyle{empty}
 \begin{document}
 
@@ -75,9 +70,12 @@ For this problem, we are trying to simulate $m$ agents each computing 1 processe
 As expected, for a small problem size, the overhead of spawning processes in parallel means that parallel processing does worse than serial processing in terms of completion times. However, solving the problem by computing processes in parallel becomes faster than serial computing when the problem size increases. But we've seen this in Problem 1 and 2 already. It is more interesting to oberve the same code run on a different machine.
 
 \begin{figure}[H]
-	\includegraphics[scale=1]{Problem3-TimeTrial.png}
-	\caption{Run on 2.90GHz Intel i7-7500U CPU with 2 cores (4 logical processors).}
+	\includegraphics[scale=1]{Problem3-4cores.png}
+	\caption{Run on 3.30GHz Intel i5-6600 CPU with 4 cores (4 logical processors).}
 \end{figure}
+
+The i7 is a 7th generation mobile CPU whereas the i5 is a 6th generation desktop CPU, which makes comparing them tricky. The i7 performs slightly better in terms of serial processing, but not by very much. The real benefit of having more cores in terms of parallel processing is demonstrated by the i5 solving the overall problem faster than the i7. So although the i7's cores are each more powerful and each core can supposedly run 2 logical processes in parallel, in reality, for the simple processes in this example problem, physically having 4 (weaker) cores solves the problem much faster.
+
 
 \subsection*{How to Run}
 

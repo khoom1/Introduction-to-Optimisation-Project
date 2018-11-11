@@ -46,7 +46,7 @@ if __name__=="__main__":
 	max_iter = 1000
 	step_size = 0.01 # must be proportional to num_edges, but we only care about time here
 	for i in range(num_tests):
-		print("Generating an example problem...")
+		print(f"Generating an example problem with {num_nodes[i]:d} nodes...")
 		incidence_matrix,s,t = create_problem(num_nodes[i])
 		num_edges[i] = incidence_matrix.get_shape()[1]
 		print("Done generating example problem.")

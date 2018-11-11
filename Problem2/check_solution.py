@@ -32,10 +32,10 @@ def do_check(A1,A2,b1,b2,verbose=False):
 	b = augment_vect(b1,b2)
 
 	begin = time.time()
-	x = gauss(np.concatenate((A,b),axis=1))
+	v = gauss(np.concatenate((A,b),axis=1))
 	end = time.time()
 	
 	if verbose:
 		print("No decomposition takes %fs." %(end-begin))
 	
-	return x[len(b1)-1], end-begin
+	return v[len(b1)-1], end-begin

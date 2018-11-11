@@ -6,28 +6,28 @@ from mygauss import gauss
 def quad_cost1(lamb,A1,b1):
 	coef_vect = deepcopy(b1)
 	coef_vect[-1] = b1[-1] + lamb
-	x = gauss(np.concatenate((A1,coef_vect),axis=1))
-	return x[-1]
+	v1 = gauss(np.concatenate((A1,coef_vect),axis=1))
+	return v1[-1]
 
 def quad_cost2(lamb,A2,b2):
 	coef_vect = deepcopy(b2)
 	coef_vect[0] = b2[0] - lamb
-	x = gauss(np.concatenate((A2,coef_vect),axis=1))
-	return x[0]
+	v2 = gauss(np.concatenate((A2,coef_vect),axis=1))
+	return v2[0]
 	
 def do_serial(max_iter,alpha,A1,A2,b1,b2,verbose=False):
 	lamb = 1.0
-	eps1 = np.zeros((max_iter,1))
-	eps2 = np.zeros((max_iter,1))
+	xi1 = np.zeros((max_iter,1))
+	xi2 = np.zeros((max_iter,1))
 	
 	begin = time.time()
 	for i in range(max_iter):
-		eps1[i] = quad_cost1(lamb,A1,b1)
-		eps2[i] = quad_cost2(lamb,A2,b2)
-		lamb = lamb - alpha*(eps1[i]-eps2[i])
+		xi1[i] = quad_cost1(lamb,A1,b1)
+		xi2[i] = quad_cost2(lamb,A2,b2)
+		lamb = lamb - alpha*(xi1[i]-xi2[i])
 	end = time.time()
 	
 	if verbose:
 		print("Dual decomposition in series takes %fs." %(end-begin))
 	
-	return eps1,eps2,end-begin
+	return xi1,xi2,end-begin

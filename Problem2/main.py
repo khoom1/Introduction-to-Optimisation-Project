@@ -40,10 +40,10 @@ if __name__=='__main__':
 	# Plot convergence of the shared variable x_3
 	max_iter = 1000
 	alpha = 0.1
-	par_eps1, par_eps2, _ = do_parallel(max_iter,alpha,A1,A2,b1,b2)
+	par_xi1, par_xi2, _ = do_parallel(max_iter,alpha,A1,A2,b1,b2)
 	plt.figure(1)
-	plt.plot(range(max_iter),par_eps1,label="Found By Agent 1")
-	plt.plot(range(max_iter),par_eps2,label="Found By Agent 2")
+	plt.plot(range(max_iter),par_xi1,label="Found By Agent 1")
+	plt.plot(range(max_iter),par_xi2,label="Found By Agent 2")
 	plt.plot(range(max_iter),true_x3*np.ones((max_iter,1)),'--',label="Found By Not Separating")
 	plt.title("Convergence of shared variable $z$")
 	plt.xlabel("Number of iterations")
@@ -52,9 +52,11 @@ if __name__=='__main__':
 	
 	
 	
-	
+	# ----------------------------------------------------------------------------------------------
 	# Run tests to compare the completion times of parallel and serial
 	# computation for increasing problem size.
+	max_iter = 1000
+	alpha = 0.1
 	num_tests = 15
 	size_problem = [i+13 for i in range(num_tests)]
 	time1 = np.zeros((num_tests,1))
@@ -78,14 +80,8 @@ if __name__=='__main__':
 	plt.ylabel("Completion time (s)")
 	plt.legend()
 	
+	# ----------------------------------------------------------------------------------------------
+	# Generate plots
 	plt.show()
-	
-	
-	
-	
-	plt.show()
-	
-#	_,_,_ = do_parallel(max_iter,alpha,A1,A2,b1,b2,True)
-#	_,_,_ = do_serial(max_iter,alpha,A1,A2,b1,b2,True)
 	
 

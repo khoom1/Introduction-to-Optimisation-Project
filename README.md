@@ -42,9 +42,9 @@ The `multiprocessing` module on Python was used to execute processes in parallel
 
 ## Overview of This Project
 
-Problems 1, 2 and 3 explore the convergence of the decomposed problem to the minimum of the original separable problem. The goal here is to demonstrate the trade-off between parallel and serial computing, as well as the trade-off between separating the cost function vs. not separating the cost function.
+In Problems 1, 2 and 3, we know that by applying dual decomposition and the subgradient method, the decomposed dual function will converge (it is an iterative method) to an optimum value, which corresponds to the optimum value found by solving the unseparated dual function. Thus, the focus is more on demonstrating the trade-off between doing dual decomposition via parallel versus serial computing, rather than the trade-off between separating the cost function versus not separating the cost function.
 
-Problem 4 then explores the convergence of the decomposed problem to the minimum of the original separable cost function given the size of messages passed between processes is limited to only a small number of bits.
+Problem 4 then explores the convergence of the decomposed problem when a limit on the size of messages passed between processes is imposed.
 
 Each folder has its own README.pdf file that explains the findings of each problem in more detail as well as how to run the functions.
 

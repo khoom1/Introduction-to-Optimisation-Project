@@ -16,7 +16,7 @@ or equivalently:
 
 <img src="https://latex.codecogs.com/svg.latex?\begin{align*}\min_{x_1,\xi_1,x_2,\xi_2}\qquad&f_1(x_1,\xi_1)+f_2(x_2,\xi_2)\\s.t.\qquad&\xi_1=\xi_2,\end{align*}" />
 
-where <img src="https://latex.codecogs.com/svg.latex?x_1\in\mathbb{R}^n" />, <img src="https://latex.codecogs.com/svg.latex?x_2\in\mathbb{R}^m" /> and <img src="https://latex.codecogs.com/svg.latex?x_3,\xi_1,\xi_2\in\mathbb{R}" /> for some n and m. Then the dual function is
+where <img src="https://latex.codecogs.com/svg.latex?x_1\in\mathbb{R}^n" />, <img src="https://latex.codecogs.com/svg.latex?x_2\in\mathbb{R}^m" /> and <img src="https://latex.codecogs.com/svg.latex?x_3,\xi_1,\xi_2\in\mathbb{R}" /> for some <img src="https://latex.codecogs.com/svg.latex?n" /> and <img src="https://latex.codecogs.com/svg.latex?m" />. Then the dual function is
 
 <img src="https://latex.codecogs.com/svg.latex?\begin{align*}q(\lambda)&=\inf_{x_1,\xi_1,x_2,\xi_2}[f_1(x_1,\xi_1)+f_2(x_2,\xi_2)-\lambda^\top(\xi_1-\xi_2)]\\&=\inf_{x_1,\xi_1}[f_1(x_1,\xi_1)-\lambda^\top(\xi_1)]+\inf_{x_2,\xi_2}[f_2(x_2,\xi_2)+\lambda^\top(\xi_2)]\\&=q_1(\lambda)+q_2(\lambda)\end{align*}" />.
 

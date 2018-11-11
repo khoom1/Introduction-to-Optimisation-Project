@@ -8,6 +8,7 @@ from parallel import do_parallel
 def create_problem(num_nodes):
 	G = nx.scale_free_graph(num_nodes)
 	incidence_matrix = -nx.incidence_matrix(G, oriented=True)
+	# s and t are dense, with elements drawn from continouous uniform distribution over [-0.5,0.5).
 	s = np.random.random(size=(num_nodes-1,1))-0.5
 	s=np.append(s,[-sum(s)],axis=0)
 	t = np.random.random(size=(num_nodes-1,1))-0.5
@@ -34,7 +35,7 @@ if __name__=="__main__":
 	plt.ylabel("Value of norms")
 	plt.legend()
 	
-	
+	# ----------------------------------------------------------------------------------------------
 	# Run tests to compare the completion times of parallel and serial
 	# computation for increasing problem size.
 	num_tests = 10
@@ -42,6 +43,8 @@ if __name__=="__main__":
 	num_edges = [0 for i in range(num_tests)]
 	time1 = np.zeros((num_tests,1))
 	time2 = np.zeros((num_tests,1))
+	max_iter = 1000
+	step_size = 0.01 # must be proportional to num_edges, but we only care about time here
 	for i in range(num_tests):
 		print("Generating an example problem...")
 		incidence_matrix,s,t = create_problem(num_nodes[i])
@@ -59,6 +62,8 @@ if __name__=="__main__":
 	plt.ylabel("Completion time (s)")
 	plt.legend()
 	
+	# ----------------------------------------------------------------------------------------------
+	# Generate plots
 	plt.show()
 	
 	

@@ -11,10 +11,10 @@ def quad_cost1(conn1,send_vec1,max_iter,A1,b1,xi_word_limit):
 		lamb_bin = conn1.recv()
 		lamb_float = bin2float(lamb_bin)
 		coef_vect[-1] = b1[-1] + lamb_float
-		x = gauss(np.concatenate((A1,coef_vect),axis=1))
+		v1 = gauss(np.concatenate((A1,coef_vect),axis=1))
 		# Simulate word limit on message send by Agent 2
-		conn1.send(float2bin(x[-1],xi_word_limit))
-		send_vec1.send(x)
+		conn1.send(float2bin(v1[-1],xi_word_limit))
+		send_vec1.send(v1)
 		
 		
 def quad_cost2(conn3,send_vec2,max_iter,A2,b2,xi_word_limit):
@@ -23,12 +23,12 @@ def quad_cost2(conn3,send_vec2,max_iter,A2,b2,xi_word_limit):
 		lamb_bin = conn3.recv()
 		lamb_float = bin2float(lamb_bin)
 		coef_vect[0] = b2[0] -lamb_float
-		x = gauss(np.concatenate((A2,coef_vect),axis=1))
+		v2 = gauss(np.concatenate((A2,coef_vect),axis=1))
 		# Simulate word limit on message send by Agent 2
-		conn3.send(float2bin(x[0],xi_word_limit))
-		send_vec2.send(x)
+		conn3.send(float2bin(v2[0],xi_word_limit))
+		send_vec2.send(v2)
 	
-def do_imprecise(max_iter,alpha,A1,A2,b1,b2,xstar,lambda_word_limit,xi_word_limit,verbose=False):
+def do_imprecise(max_iter,alpha,A1,A2,b1,b2,vstar,lambda_word_limit,xi_word_limit,verbose=False):
 	error = np.zeros((max_iter,1))
 	lamb = 1.0
 	conn1, conn2 = Pipe()
@@ -46,13 +46,13 @@ def do_imprecise(max_iter,alpha,A1,A2,b1,b2,xstar,lambda_word_limit,xi_word_limi
 		lamb_bin = float2bin(lamb,lambda_word_limit)
 		conn2.send(lamb_bin)
 		conn4.send(lamb_bin)
-		v1 = conn2.recv()
-		v2 = conn4.recv()
-		lamb = lamb - alpha*(bin2float(v1)-bin2float(v2))
+		xi1 = conn2.recv()
+		xi2 = conn4.recv()
+		lamb = lamb - alpha*(bin2float(xi1)-bin2float(xi2))
 		
-		x1 = rec_vec1.recv()
-		x2 = rec_vec2.recv()
-		error[i] = np.linalg.norm(np.subtract(x1[:-1]+[x1[-1]/2+x2[0]/2]+x2[1:],xstar))
+		v1 = rec_vec1.recv()
+		v2 = rec_vec2.recv()
+		error[i] = np.linalg.norm(np.subtract(v1[:-1]+[v1[-1]/2+v2[0]/2]+v2[1:],vstar))
 	d1.join()
 	d2.join()
 	end = time.time()

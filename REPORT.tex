@@ -545,7 +545,7 @@ For low precision on $\lambda$, we enter some limit cycle behaviour when roundin
 	\caption{Cyclic behaviour of $\lambda$ when its true value is 5.966, which lies beetween 6.000 and 5.875.}
 \end{figure}
 
-Let the precise $\lambda$ be denoted $\lambda_t$ and the steady state value of $||v_{aug}-v^*||_2$ for the precise problem be $e_{true}$. Let the steady state value of $||v_{aug}-v^*||_2$ be $e_{imprecise}$. Let $v_{aug}(\lambda)$ be the result of solving $A_1v_1+B_1(\lambda)=0$ and $A_2v_2+B_2(\lambda)=0$ for a given $\lambda$ and augmenting the result (see Figure 7). Then the error bound $||e_{true}-e_{imprecise}||$ will be given by $||v_{aug}(\lambda_t+word)-v_{aug}(\lambda_t-word)||$, where $word$ is the word limit on $\lambda$.
+%Let the precise $\lambda$ be denoted $\lambda_t$ and the steady state value of $||v_{aug}-v^*||_2$ for the precise problem be $e_{true}$. Let the steady state value of $||v_{aug}-v^*||_2$ be $e_{imprecise}$. Let $v_{aug}(\lambda)$ be the result of solving $A_1v_1+B_1(\lambda)=0$ and $A_2v_2+B_2(\lambda)=0$ for a given $\lambda$ and augmenting the result (see Figure 7). Then the error bound $||e_{true}-e_{imprecise}||$ will be given by $||v_{aug}(\lambda_t+word)-v_{aug}(\lambda_t-word)||$, where $word$ is the word limit on $\lambda$.
 
 \begin{figure}[H]
 	\centering
@@ -555,7 +555,7 @@ Let the precise $\lambda$ be denoted $\lambda_t$ and the steady state value of $
 	\caption{Similarly, convergence for a given limit on $\xi$ is also somewhat dependent on the randomly generated the problem.}
 \end{figure}
 
-Notice for low precision on $\lambda$, the error norm values do not settle at one value in steady state. On the other hand, with low precision on $\xi$ the error does appear to be constant in steady state. Presumably in the case of low precision on $\xi$, it is the rounding error caused by rounding $\xi$ to the closest limited-bit binary representation. Whereas, 
+With low precision on $\xi$ the error appears to be constant in steady state. Presumably in the case of low precision on $\xi$, the constant error is the rounding error caused by rounding $\xi$ to the closest limited-bit binary representation.
 
 \subsection*{How to Run}
 

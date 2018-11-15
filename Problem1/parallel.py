@@ -2,7 +2,7 @@ from multiprocessing import Process, Pipe
 import numpy as np
 import time
 
-def quad_cost1(conn1,max_iter,size_problem):
+def agent1(conn1,max_iter,size_problem):
 	for i in range(max_iter):
 		lamb = conn1.recv()
 		for i in range(size_problem):
@@ -11,7 +11,7 @@ def quad_cost1(conn1,max_iter,size_problem):
 		conn1.send(xi1)
 	
 
-def quad_cost2(conn3,max_iter,size_problem):
+def agent2(conn3,max_iter,size_problem):
 	for i in range(max_iter):
 		lamb = conn3.recv()
 		for i in range(size_problem):
@@ -27,8 +27,8 @@ def do_parallel(max_iter,alpha,size_problem=0,verbose=False):
 	xi2 = np.zeros((max_iter,1))
 	
 	begin = time.time()
-	d1 = Process(target=quad_cost1,args=(conn1,max_iter,size_problem))
-	d2 = Process(target=quad_cost2,args=(conn3,max_iter,size_problem))
+	d1 = Process(target=agent1,args=(conn1,max_iter,size_problem))
+	d2 = Process(target=agent2,args=(conn3,max_iter,size_problem))
 	d1.start()
 	d2.start()
 	for i in range(max_iter):

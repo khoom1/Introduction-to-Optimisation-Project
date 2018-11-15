@@ -4,7 +4,7 @@ import numpy as np
 from copy import deepcopy
 from mygauss import gauss
 
-def quad_cost3(conn1,max_iter,A1,b1):
+def agent1(conn1,max_iter,A1,b1):
 	coef_vect = deepcopy(b1)
 	for i in range(max_iter):
 		lamb = conn1.recv()
@@ -13,7 +13,7 @@ def quad_cost3(conn1,max_iter,A1,b1):
 		conn1.send(v1)
 		
 		
-def quad_cost4(conn3,max_iter,A2,b2):
+def agent2(conn3,max_iter,A2,b2):
 	coef_vect = deepcopy(b2)
 	for i in range(max_iter):
 		lamb = conn3.recv()
@@ -29,8 +29,8 @@ def do_precise(max_iter,alpha,A1,A2,b1,b2,vstar,verbose=False):
 	conn3, conn4 = Pipe()
 
 	begin = time.time()
-	d1 = Process(target=quad_cost3,args=(conn1,max_iter,A1,b1))
-	d2 = Process(target=quad_cost4,args=(conn3,max_iter,A2,b2))
+	d1 = Process(target=agent1,args=(conn1,max_iter,A1,b1))
+	d2 = Process(target=agent2,args=(conn3,max_iter,A2,b2))
 	d1.start()
 	d2.start()
 	for i in range(max_iter):

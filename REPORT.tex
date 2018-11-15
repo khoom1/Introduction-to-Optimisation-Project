@@ -24,16 +24,15 @@
 
 This repository was created as a final project for the subject ELEN90026 Introduction to Optimisation at The University of Melbourne.
 
-The purpose of this project is to demonstrate two aspects of using the method of dual decomposition for solving an optimisation problem with a separable cost function (and one complicating variable). The first aspect is the application of parallel computing to simulate decomposing the separable problem into subproblems and solving those subproblems in parallel on separate machines. The second aspect is the affect of a limit on the packet size of messages passed between these parallel processes/machines on convergence of the overall algorithm.
+The purpose of this project is to demonstrate two aspects of using the method of dual decomposition for solving an optimisation problem with a separable cost function. The first aspect is the application of parallel computing to simulate decomposing the separable problem into subproblems and solving those subproblems in parallel on separate machines. The second aspect is the affect of a limit on the packet size of messages passed between these parallel processes/machines on convergence of the overall algorithm.
 
 In terms of hardware, the examples and results were generated using a 2.90GHz Intel i7-7500U CPU with 2 cores (4 logical processors).
 
 \section*{Background}
 
 \subsection*{Separable Cost Function}
-In general, the analysis below is not limited to cost functions that are separated into only two parts. But for now, let's begin by dealing with this type of problem first.
+To illustrate a separable problem, let's begin by considering the following cost function that can be split into two functions. Both functions share a complicating variable $x_3$. This simple problem shows how to do a change of variable to deal with this complicating variable.
 
-The following separable unconstrained problem will be considered:
 \begin{align*}
 \min_{x_1,x_2,x_3}f_1(x_1,x_3)+f_2(x_2,x_3)
 \end{align*}
@@ -144,7 +143,7 @@ Make sure you are in the correct directory. Then to run the test that generated 
 
 The function \textbf{parallel.do\_parallel}, description.
 
-Syntax: do\_parallel(max\_iter,alpha,size\_problem=0,verbose=False)
+Syntax: do\_general(max\_iter,alpha,size\_problem=0,verbose=False)
 
 Parameter values:
 \begin{itemize}
@@ -163,13 +162,38 @@ Outputs:
 
 \subsection*{Closing Discussion for Problem 1}
 
-This simple problem provides a framework on using the Python \textbf{multiprocessing} module, which we can carry forward to the next problem. The expected computational overhead in spawning processes has been demonstrated. As expected, the parallel processing scheme is faster than the serial processing one only for proceses with large enough complexity. And as expected, processing the minimisers of the decomposed dual function does not affect convergence to the solution of the original primal problem.
+This simple problem provides a framework on using the Python \textbf{multiprocessing} module, which we can carry forward to the next problem. The expected computational overhead in spawning processes has been demonstrated. As expected, the parallel processing scheme is faster than the serial processing one only for proceses with large enough complexity. And as expected, decomposing the dual function and finding the minimisers as separate processes does not affect convergence to the solution of the original primal problem.
 
 \section*{Problem 2}
 
-Let's now observe the same results as Problem 1, but for a multidimensional problem. Consider a (convex) quadratic cost function, simply because we can write out the equation for its minimiser explicitly. In general, outcome 1 can be shown for any problem where agents act as oracles and provide the minimiser to the decomposed dual function when queried. In this problem with quadratic costs, the functions are differentiable and their gradients are linear, which makes for an easy demonstration.
+Now that we know the toy example behaves as expected, let's consider any problem with a cost function that can be split into two functions. We make no assumption on the functions other than that they are convex. Recall that with one complicating variable, this can be formulated as
+
+\begin{align*}
+\min_{x_1,\xi_1,x_2,\xi_2}\qquad&f_1(x_1,\xi_1)+f_2(x_2,\xi_2)\\
+s.t.\qquad&\xi_1=\xi_2,
+\end{align*}
+where $x_1\in\mathbb{R}^n$, $x_2\in\mathbb{R}^m$ and $x_3,\xi_1,\xi_2\in\mathbb{R}$ for some $n$ and $m$.
+
+Then we can decompose the dual function and apply the subgradient method
+\begin{itemize}
+	\item At step $k=0$, some master processor chooses an initial $\lambda(0)=1.0$ and sends $\lambda(0)$ to Agents 1 and 2. Agent 1 calculates $(x_1(0),\xi_1(0))\in\arg\min_{x_1,\xi_1}[f_1(x_1,\xi_1)-\lambda(0)(\xi_1)]$, while (in parallel) Agent 2 calculates $(x_2(0),\xi_2(0))\in\arg\min_{x_2,\xi_2}[f_1(x_2,\xi_2)-\lambda(0)(\xi_2)]$. Agents 1 and 2 send $\xi_1^*(0)$ and $\xi_2^*(0)$ back to the master processor.
+	\item At step $k=1$, the master processor updates $\lambda(1)=\lambda(0)-\alpha(\xi_1^*(0)-\xi_2^*(0))$ and sends $\lambda(1)$ to Agents 1 and 2. Agent 1 calculates $(x_1(1),\xi_1(1))\in\arg\min_{x_1,\xi_1}[f_1(x_1,\xi_1)-\lambda(1)(\xi_1)]$, while (in parallel) Agent 2 calculates $(x_2(1),\xi_2(1))\in\arg\min_{x_2,\xi_2}[f_1(x_2,\xi_2)-\lambda(1)(\xi_2)]$. Agents 1 and 2 send $\xi_1^*(1)$ and $\xi_2^*(1)$ back to the master processor.
+	\item Keep looping until $\xi_1^*(k)-\xi_2^*(k)$ is small enough, or we reach some chosen maximum number of iterations.
+\end{itemize}
+
+This holds for any cost function that can be decomposed into two convex functions, even a problem without a known gradient. Here is an example with $f_1(x_1,x_3)=10|x_1|+x_3^2+x_1+|x_1x_3|+x_3$ and $f_2(x_2,x_3)=x_3^2 + x_2^2$. The minimiser of the overall problem is $(0,0,-0.25)$. No explicit equation for their minimisers have been found, Agent 1 and Agent 2 both use the python function in the \textbf{scipy} module \textbf{scipy.optimize.minimize} to calculate $(x_1(k),\xi_1(k))$ and $(x_2(k),\xi_2(k))$ respectively in each iteration of the subgradient method $k$.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{Problem1-General.png}
+	\caption{This plot can be generated by the command \textbf{python general.py}.}
+\end{figure}
+
+It is not difficult to do the same for a problem that can be separated into more than two functions. This is shown in Problem 3. But, let's first demonstrate outcome 2, where the processes must be of sufficient size to see any benefit of using parallel processing on these optimisation problems.
 
 \subsection*{An Example Quadratic Problem}
+
+Consider a similar problem to Problem 1, except we now have $x_1$ and $x_2$ as vectors. Consider a (convex) quadratic cost function, simply because we can write out the equation for its minimiser explicitly, and do not need to rely on any in-built solvers. In this problem with quadratic costs, the functions are differentiable and their gradients are linear, which makes for an easy demonstration.
 
 The following is the separable unconstrained optimisation problem to be solved:
 \begin{align*}
@@ -297,7 +321,29 @@ Make sure you are in the correct directory. Then to run the test that generated 
 
 \subsubsection*{Function Descriptions}
 
-The function \textbf{parallel.do\_parallel}, description.
+\noindent The function \textbf{general.do\_general}, description.
+
+Syntax: do\_general(max\_iter,alpha,n,m,cost1,cost2,verbose=False)
+
+Parameter values:
+\begin{itemize}
+	\item max\_iter, Required. Number of iterations for the subgradient method.
+	\item alpha, Required. Step size for the subgradient method.
+	\item n, Required. Length of vector $x_1$.
+	\item m, Required. Length of vector $x_2$.
+	\item fn1, Required. Cost function object that returns the value of $f_1$.
+	\item fn2, Required. Cost function object that returns the value of $f_2$. 
+	\item verbose, Default False. Print results to screen.
+\end{itemize}
+
+Outputs:
+\begin{itemize}
+	\item Output 1. List containing $\xi_1^*$ for all iterations of the subgradient method.
+	\item Output 2. List containing $\xi_2^*$ for all iterations of the subgradient method.
+	\item Output 3. Completion time.
+\end{itemize}
+
+\noindent The function \textbf{parallel.do\_parallel}, description.
 
 Syntax: do\_parallel(max\_iter,alpha,A1,A2,b1,b2,verbose=False)
 

@@ -5,7 +5,7 @@ from copy import deepcopy
 from mygauss import gauss
 from conversions import float2bin, bin2float
 
-def quad_cost1(conn1,send_vec1,max_iter,A1,b1,xi_word_limit):
+def agent1(conn1,send_vec1,max_iter,A1,b1,xi_word_limit):
 	coef_vect = deepcopy(b1)
 	for i in range(max_iter):
 		lamb_bin = conn1.recv()
@@ -17,7 +17,7 @@ def quad_cost1(conn1,send_vec1,max_iter,A1,b1,xi_word_limit):
 		send_vec1.send(v1)
 		
 		
-def quad_cost2(conn3,send_vec2,max_iter,A2,b2,xi_word_limit):
+def agent2(conn3,send_vec2,max_iter,A2,b2,xi_word_limit):
 	coef_vect = deepcopy(b2)
 	for i in range(max_iter):
 		lamb_bin = conn3.recv()
@@ -37,8 +37,8 @@ def do_imprecise(max_iter,alpha,A1,A2,b1,b2,vstar,lambda_word_limit,xi_word_limi
 	send_vec2, rec_vec2 = Pipe()
 	
 	begin = time.time()
-	d1 = Process(target=quad_cost1,args=(conn1,send_vec1,max_iter,A1,b1,xi_word_limit))
-	d2 = Process(target=quad_cost2,args=(conn3,send_vec2,max_iter,A2,b2,xi_word_limit))
+	d1 = Process(target=agent1,args=(conn1,send_vec1,max_iter,A1,b1,xi_word_limit))
+	d2 = Process(target=agent2,args=(conn3,send_vec2,max_iter,A2,b2,xi_word_limit))
 	d1.start()
 	d2.start()
 	for i in range(max_iter):

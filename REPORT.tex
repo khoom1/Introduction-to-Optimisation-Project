@@ -31,8 +31,7 @@ In terms of hardware, the examples and results were generated using a 2.90GHz In
 \section*{Background}
 
 \subsection*{Separable Cost Function}
-To illustrate a separable problem, let's begin by considering the following cost function that can be split into two functions. Both functions share a complicating variable $x_3$. This simple problem shows how to do a change of variable to deal with this complicating variable.
-
+To illustrate a separable problem, let's begin by considering the following cost function that can be split into two functions. Both functions share a complicating variable $x_3$.
 \begin{align*}
 \min_{x_1,x_2,x_3}f_1(x_1,x_3)+f_2(x_2,x_3)
 \end{align*}
@@ -44,7 +43,7 @@ s.t.\qquad&\xi_1=\xi_2,
 where $x_1\in\mathbb{R}^n$, $x_2\in\mathbb{R}^m$ and $x_3,\xi_1,\xi_2\in\mathbb{R}$ for some $n$ and $m$.
 
 \subsection*{Dual Decomposition and the Subgradient Method}
-The dual function is then
+The dual function for this problem is then
 \begin{align*}
 q(\lambda)&=\inf_{x_1,\xi_1,x_2,\xi_2}[f_1(x_1,\xi_1)+f_2(x_2,\xi_2)-\lambda^\top(\xi_1-\xi_2)]\\
 &=\inf_{x_1,\xi_1}[f_1(x_1,\xi_1)-\lambda^\top(\xi_1)]+\inf_{x_2,\xi_2}[f_2(x_2,\xi_2)+\lambda^\top(\xi_2)]\\
@@ -72,7 +71,7 @@ The \textbf{multiprocessing} module on Python was used to execute processes in p
 
 \section*{Outcomes}
 
-Some expected outcomes/results from this project which will be demonstrated using by the example problems:
+Some expected outcomes/results from this project which will be demonstrated in the coming problems.
 
 \begin{enumerate}
 	\item As a result of dual decomposition, there are steps in the subgradient method that can be done in parallel, namely finding the minimisers of the decomposed dual function. The first expectation is that parallelising these processes will not affect the convergence of the subgradient method.
@@ -84,13 +83,13 @@ Some expected outcomes/results from this project which will be demonstrated usin
 
 \section*{Problem 1}
 
-This is a pedagogical toy problem. It is designed to show how Process and Pipe objects from the multiprocessing module on Python can be used in a separable optimisation problem. This problem relates to outcome 2, but also touches briefly on outcomes 1 and 3.
+This is a pedagogical toy problem. It is designed to show how Process and Pipe objects from the multiprocessing module on Python can be used in a separable optimisation problem. This problem relates to Outcome 2, but also touches briefly on Outcomes 1 and 3.
 
 Let's use a specific example of a problem with cost function that can be partitioned into two parts. The following is the separable unconstrained optimisation problem to be solved:
 \begin{align*}
 \min_{x_1,x_2,x_3}\qquad& x_1^2+x_2^2+2x_3^2,
 \end{align*}
-where $x_1,x_2,x_3\in\mathbb{R}$. Let $x_1$ and $x_2$ both be private variables, i.e., they can only be accessed by Agent 1 and Agent 2 respectively. Let $x_3$ be a shared or public variable that can be accessed by all agents. The minimiser of this problem is obviously $(x_1^*,x_2^*,x_3^*)=(0,0,0)$, but remember, the point of this problem is really to give Python's multiprocessing module a test run on an optimisation problem. 
+where $x_1,x_2,x_3\in\mathbb{R}$. Let $x_1$ and $x_2$ both be private variables, i.e., they can only be accessed by Agent 1 and Agent 2 respectively. Let $x_3$ be a shared or public variable that can be accessed by all agents. The minimiser of this problem is obviously $(x_1^*,x_2^*,x_3^*)=(0,0,0)$. It is a simple problem, the point is really to give Python's multiprocessing module a test run on an optimisation problem. 
 
 By applying a change of variables, the cost function can be separated and the new formulation of the problem will be
 \begin{align*}
@@ -121,7 +120,7 @@ As a sanity check, let's simulate a more ``difficult'' problem, where the minimi
 	\includegraphics[scale=1]{Problem1-TimeTrial.png}
 \end{figure}
 
-Thus, we passed the sanity check. For parallel computing to finish faster than serial computing, the cost of computation per process must be larger the computational cost of spawning that process. In terms of our optimisation problem, the decomposed dual function must be decomposed into smaller functions whose minimisers are found through sufficiently complex computations, in order to observe any fruitful results from using parallel computing.
+For parallel computing to finish faster than serial computing, the cost of computation per process must be larger the computational cost of spawning that process. In terms of our optimisation problem, this means that the decomposed dual function must be decomposed into functions that are computationally complex, in order to observe any fruitful results from using parallel computing.
 
 \subsection*{Convergence of Algorithm}
 
@@ -164,9 +163,9 @@ Outputs:
 
 This simple problem provides a framework on using the Python \textbf{multiprocessing} module, which we can carry forward to the next problem. The expected computational overhead in spawning processes has been demonstrated. As expected, the parallel processing scheme is faster than the serial processing one only for proceses with large enough complexity. And as expected, decomposing the dual function and finding the minimisers as separate processes does not affect convergence to the solution of the original primal problem.
 
-\section*{Problem 2}
+\section*{Problem 1.5}
 
-Now that we know the toy example behaves as expected, let's quickly confirm that the parallelising procedure in Problem 1 can apply more generally to problems with a cost function that can be split into two functions. No assumption on the functions other than that they are convex. Recall that with one complicating variable, this can be formulated as
+Before moving on to Problem 2, it is worth making a quick detour and coding up the subgradient method for a more general separable problem. Consider the following problem, where there is no assumption on the functions other than that they are convex. Recall that with one complicating variable, a separable problem can be formulated as
 \begin{align*}
 \min_{x_1,\xi_1,x_2,\xi_2}\qquad&f_1(x_1,\xi_1)+f_2(x_2,\xi_2)\\
 s.t.\qquad&\xi_1=\xi_2,
@@ -180,7 +179,7 @@ Then we can decompose the dual function and apply the subgradient method
 	\item Keep looping until $\xi_1^*(k)-\xi_2^*(k)$ is small enough, or we reach some chosen maximum number of iterations.
 \end{itemize}
 
-This holds for any cost function that can be decomposed into two convex functions, even a problem without a known gradient. Here is an example with $f_1(x_1,x_3)=10|x_1|+x_3^2+x_1+|x_1x_3|+x_3$ and $f_2(x_2,x_3)=x_3^2 + x_2^2$. The minimiser of the overall problem is $(0,0,-0.25)$. No explicit equation for their minimisers have been found, Agent 1 and Agent 2 both use the python function in the \textbf{scipy} module \textbf{scipy.optimize.minimize} to calculate $(x_1(k),\xi_1(k))$ and $(x_2(k),\xi_2(k))$ respectively in each iteration of the subgradient method $k$.
+This holds for any cost function that can be decomposed into two convex functions, even a problem without a known gradient. Here is an example with $f_1(x_1,x_3)=10|x_1|+x_3^2+x_1+|x_1x_3|+x_3$ and $f_2(x_2,x_3)=x_3^2 + x_2^2$. The minimiser of the overall problem is $(0,0,-0.25)$. No equation for their minimisers needs to be provided to the agents; Agent 1 and Agent 2 both use the python function in the \textbf{scipy} module \textbf{scipy.optimize.minimize} to calculate $(x_1(k),\xi_1(k))$ and $(x_2(k),\xi_2(k))$ respectively in each iteration of the subgradient method $k$.
 
 \begin{figure}[H]
 	\centering
@@ -188,7 +187,36 @@ This holds for any cost function that can be decomposed into two convex function
 	\caption{This plot can be generated by the command \textbf{python general.py}.}
 \end{figure}
 
-In fact, we can do the same for problems that can be separated into more than two functions. But before looking into that, let's first demonstrate outcome 2, and that the processes must be of sufficient size to see any benefit of using parallel processing on separable problems.
+In fact, we can do the same for problems that can be separated into more than two functions (which will be done in Problem 3). But before looking into that, let's first move on to Problem 2, which demonstrates Outcome 2.
+
+\subsection*{How to Run}
+
+\noindent The function \textbf{general.do\_general}, description.
+
+Syntax: do\_general(max\_iter,alpha,n,m,cost1,cost2,verbose=False)
+
+Parameter values:
+\begin{itemize}
+	\item max\_iter, Required. Number of iterations for the subgradient method.
+	\item alpha, Required. Step size for the subgradient method.
+	\item n, Required. Length of vector $x_1$.
+	\item m, Required. Length of vector $x_2$.
+	\item fn1, Required. Cost function object that returns the value of $f_1$.
+	\item fn2, Required. Cost function object that returns the value of $f_2$. 
+	\item verbose, Default False. Print results to screen.
+\end{itemize}
+
+Outputs:
+\begin{itemize}
+	\item Output 1. List containing $\xi_1^*$ for all iterations of the subgradient method.
+	\item Output 2. List containing $\xi_2^*$ for all iterations of the subgradient method.
+	\item Output 3. Completion time.
+\end{itemize}
+
+
+\section*{Problem 2}
+
+Picking up where Problem 1 left off, Outcome 2 will now be demonstrated. As found in Problem 1, the complexity of the parallel processes needs to be increased in order to see the benefit of using parallel processing on the subgradient method.
 
 \subsection*{An Example Quadratic Problem}
 
@@ -320,28 +348,6 @@ Make sure you are in the correct directory. Then to run the test that generated 
 
 \subsubsection*{Function Descriptions}
 
-\noindent The function \textbf{general.do\_general}, description.
-
-Syntax: do\_general(max\_iter,alpha,n,m,cost1,cost2,verbose=False)
-
-Parameter values:
-\begin{itemize}
-	\item max\_iter, Required. Number of iterations for the subgradient method.
-	\item alpha, Required. Step size for the subgradient method.
-	\item n, Required. Length of vector $x_1$.
-	\item m, Required. Length of vector $x_2$.
-	\item fn1, Required. Cost function object that returns the value of $f_1$.
-	\item fn2, Required. Cost function object that returns the value of $f_2$. 
-	\item verbose, Default False. Print results to screen.
-\end{itemize}
-
-Outputs:
-\begin{itemize}
-	\item Output 1. List containing $\xi_1^*$ for all iterations of the subgradient method.
-	\item Output 2. List containing $\xi_2^*$ for all iterations of the subgradient method.
-	\item Output 3. Completion time.
-\end{itemize}
-
 \noindent The function \textbf{parallel.do\_parallel}, description.
 
 Syntax: do\_parallel(max\_iter,alpha,A1,A2,b1,b2,verbose=False)
@@ -366,13 +372,13 @@ Outputs:
 
 \subsection*{Closing Discussion for Problem 2}
 
-In Problem 2, we say for the case of problems whose cost functions can be separated into two functions that we observe as expected outcome 1 and outcome 2. As an additional observation, the order of complexity of the oracle that returns the minimisers will determine the order of growth in completion time, and the minimisers must be sufficiently computationally complex in order to see parallel processing finish faster than serial processing.
+In Problem 2, we say for the case of problems whose cost functions can be separated into two functions that we observe as expected Outcome 1 and Outcome 2. As an additional observation, the order of complexity of the oracle that returns the minimisers will determine the order of growth in completion time, and the minimisers must be sufficiently computationally complex in order to see parallel processing finish faster than serial processing.
 
 \section*{Problem 3}
 
-Given Problem 1 and 2 both dealt with only two agents computing two processes in parallel, this presents a good opportunity to move on to a problem requiring a much larger number of agents, i.e., a demonstration of outcome 3.
+Given Problem 1 and 2 both dealt with only two agents computing two processes in parallel, this presents a good opportunity to move on to a problem requiring a much larger number of agents, i.e., a demonstration of Outcome 3.
 
-In addition, this problem can be used as a platform to compare the performance of hardware. All previous results have been generated on a 2.90GHz Intel i7-7500U CPU with 2 cores (4 logical processors). To demonstrate outcome 4, a 3.30GHz Intel i5-6600 CPU with 4 cores will be used to compare against the benchmark completion times set by the i7 CPU.
+In addition, we can investigate Outcome 4 and compare the performance of hardware. All previous results have been generated on a 2.90GHz Intel i7-7500U CPU with 2 cores (4 logical processors). To demonstrate Outcome 4, a 3.30GHz Intel i5-6600 CPU with 4 cores will be used to compare against the benchmark completion times set by the i7 CPU.
 
 Problem 3 revisits a problem from a previous assignment in this subject. It goes as follows, from the ELEN90026-Introduction to Optimisation: Homework 3 assignment brief verbatim.
 
@@ -474,9 +480,9 @@ Along the lines of the above experiment, it may be of interest to investigate th
 
 \section*{Problem 4}
 
-Let's take a look at outcome 5. We want to investigate the effect of lower precision in messages sent between agents on convergence of the subgradient method. Assume that messages are sent as binary numbers with a limited number of bits. We first consider problems with a limit on the precision of the dual variables, $\lambda$.
+Let's take a look at Outcome 5. We want to investigate the effect of lower precision in messages sent between agents on convergence of the subgradient method. Assume that messages are sent as binary numbers with a limited number of bits. We first consider problems with imprecision in the dual variables, $\lambda$.
 
-\subsection*{Convergence Analysis}
+\subsection*{A Convergence Analysis for Imprecise $\lambda$}
 
 Consider separable problems that can be separated into $p$ functions, and with $q$ complicating variables.
 \begin{align*}
@@ -510,9 +516,19 @@ We have to make an assumption at this stage. Assume $E(\delta_k^\top (\lambda_k-
 
 $\textbf{E}\sum\limits_{k=1}^K (q(\lambda_k)-q(\lambda^*)) \leq \frac{1}{2\alpha} \Vert \lambda_1-\lambda^*\Vert^2+ \sum\limits_{k=1}^K \frac{\alpha}{2}\textbf{E}\Vert \frac{\delta_k}{\alpha} + g_k \Vert^2$
 
-So we get an (expected) convergence of the dual function value.
+So we get an (expected) convergence of the dual function value when there is imprecision of messages passed between agents. 
 
-\subsection*{Numerical Results}
+\subsection*{Word Limit}
+
+The following terms will be used to describe a binary number.
+\begin{center}
+	$\underbrace{\pm}_{\text{sign}}\underbrace{10101010101010}_{\text{binary integer}}\underbrace{.}_{\text{binary point}}\underbrace{1010101010101010}_{\text{binary fraction}}$
+\end{center}
+
+
+Define the word limit as the limit on the number of bits used to represent the binary fraction of a message, not including the sign and integer bits.
+
+\subsection*{Example Problem}
 Revisit Problem 2, where the optimisation problem was unconstrained and had one shared variable. Recall that the dual function was given by
 \begin{align*}
 q(\lambda)&=q_1(\lambda)+q_2(\lambda)\\
@@ -550,21 +566,7 @@ Consider now three agents Agent 1, Agent 2 and Agent 3. Agent 3 computes the upd
 	\caption{Steps 1, 2, 3, 4 show the procedure in a single iteration of the subgradient method.}
 \end{figure}
 
-Previously, messages were assumed to have unlimited size, i.e., there is no floating point error when $\lambda$, $\xi_1$ and $\xi_2$ are sent between Agents 1, 2 and 3. Let's now consider a limit on message size. Assume messages are sent in binary, then there is a limit on the number of bits that can be sent.
-
-\subsection*{Word Limit}
-
-The following terms will be used to describe a binary number.
-\begin{center}
-	$\underbrace{\pm}_{\text{sign}}\underbrace{10101010101010}_{\text{binary integer}}\underbrace{.}_{\text{binary point}}\underbrace{1010101010101010}_{\text{binary fraction}}$
-\end{center}
-
-
-For the example problems generated, it so happens that the variable $\lambda$ is in general larger than $\xi_1$ and $\xi_2$. Messages involving $\lambda$ require at least 3 binary integer bits, while messages involving $\xi_1$ and $\xi_2$ generally have a binary integer of 0, i.e., they converge to values with absolute values smaller than 1.
-
-Let's vary the limit on the number of bits used to represent the binary fraction, and assume the number of bits used to represent the binary integer is limited to 3 bits plus 1 bit for the sign. Thus, the word limit referred to below is the limit on the number of bits used to represent the binary fraction of a message, not including the sign and integer bits.
-
-\subsection*{Convergence}
+Previously, messages were assumed to have unlimited size, i.e., there is no floating point error when $\lambda$ was sent from Agent 3 to Agent 1 and 2. Let's now consider a limit on message size. Assume messages are sent in binary, then there is a limit on the number of bits that can be sent.
 
 In order to measure convergence, we need a benchmark. Recall from Problem 2 the combined problem, where $A_1$ and $A_2$ are overlapped to form $A$, and $B_1$ and $B_2$ overlapped to form $B$. The combined problem $Av+B=0$ can be solved, and we can use the vector $v$ as a benchmark to measure convergence. Let $v^*$ be the solution to the problem $Av+B=0$, let $v_1^*$ be the solution to the problem $A_1v_1+B_1=0$ and let $v_1^*$ be the solution to the problem $A_2v_2+B_2=0$. The dimensions do not match, so let's overlap $v_1^*$ and $v_2^*$
 
@@ -629,17 +631,19 @@ For low precision on $\lambda$, we enter some limit cycle behaviour when roundin
 	\caption{Cyclic behaviour of $\lambda$ when its true value is 5.966, which lies beetween 6.000 and 5.875.}
 \end{figure}
 
-%Let the precise $\lambda$ be denoted $\lambda_t$ and the steady state value of $||v_{aug}-v^*||_2$ for the precise problem be $e_{true}$. Let the steady state value of $||v_{aug}-v^*||_2$ be $e_{imprecise}$. Let $v_{aug}(\lambda)$ be the result of solving $A_1v_1+B_1(\lambda)=0$ and $A_2v_2+B_2(\lambda)=0$ for a given $\lambda$ and augmenting the result (see Figure 7). Then the error bound $||e_{true}-e_{imprecise}||$ will be given by $||v_{aug}(\lambda_t+word)-v_{aug}(\lambda_t-word)||$, where $word$ is the word limit on $\lambda$.
+\subsection*{Imprecise $\xi_1$ and $\xi_2$}
+
+Let's now consider imprecise messages sent from Agent 1 and Agent 2 to Agent 3.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.5]{Problem4-Convergence8.png}
 	\includegraphics[scale=0.5]{Problem4-Convergence9.png}
 	\includegraphics[scale=0.5]{Problem4-Convergence10.png}
-	\caption{Similarly, convergence for a given limit on $\xi$ is also somewhat dependent on the randomly generated the problem.}
+	\caption{Convergence for a given limit on $\xi$ is also somewhat dependent on the randomly generated the problem.}
 \end{figure}
 
-With low precision on $\xi$ the error appears to be constant in steady state. Presumably in the case of low precision on $\xi$, the constant error is the rounding error caused by rounding $\xi$ to the closest limited-bit binary representation.
+With low precision on $\xi$ the error appears to be constant in steady state. In the case of low precision on $\xi$, the constant error is the rounding error caused by rounding $\xi$ to the closest limited-bit binary representation.
 
 \subsection*{Perturbation Analysis}
 

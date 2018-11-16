@@ -47,7 +47,7 @@ def do_precise(max_iter,alpha,A1,A2,b1,b2,vstar,verbose=False):
 	if verbose:
 		print("Dual decomposition in parallel takes %fs." %(end-begin))
 		
-	return error
+	return error,lamb
 	
 	
 	

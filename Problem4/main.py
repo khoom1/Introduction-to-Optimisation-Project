@@ -5,7 +5,7 @@ from scipy import random
 import numpy as np
 import matplotlib.pyplot as plt
 
-
+random.seed(55)
 #Generate well-conditioned, positive definite matrices
 #(all eigenvalues larger than or equal to 0.5)
 def create_pos_matrix(size):
@@ -26,13 +26,13 @@ def create_vect(size):
 
 if __name__=='__main__':
 	# Vary these limits to get different plots
-	lambda_word_limit = 100
+	lambda_word_limit = 3
 	xi_word_limit = 100
 	
 	max_iter = 1000
-	alpha = 0.1
-	size1 = 10
-	size2 = 15
+	alpha = 1
+	size1 = 3
+	size2 = 3
 	print("Generating an example problem...")
 	A1 = create_pos_matrix(size1)
 	A2 = create_pos_matrix(size2)
@@ -41,8 +41,8 @@ if __name__=='__main__':
 	print("Done generating matrices.")
 	
 	vstar = do_check(A1,A2,b1,b2)
-	error_from_precise = do_precise(max_iter,alpha,A1,A2,b1,b2,vstar)
-	error_from_imprecise = do_imprecise(max_iter,alpha,A1,A2,b1,b2,vstar,lambda_word_limit,xi_word_limit)
+	error_from_precise,lamb_precise = do_precise(max_iter,alpha,A1,A2,b1,b2,vstar)
+	error_from_imprecise,lamb,lamb_rounded = do_imprecise(max_iter,alpha,A1,A2,b1,b2,vstar,lambda_word_limit,xi_word_limit)
 	
 	plt.figure(1)
 	plt.plot(range(max_iter),error_from_precise,'b--',label="No word limit")
@@ -51,5 +51,15 @@ if __name__=='__main__':
 	plt.xlabel("Number of iterations")
 	plt.ylabel("$||v_{aug}-v^*||_2$")
 	plt.legend()
+	
+	plt.figure(2)
+	plt.plot(range(max_iter-50,max_iter),lamb[max_iter-50:],'b.',label="$\lambda$ imprecise")
+	plt.plot(range(max_iter-50,max_iter),lamb_rounded[max_iter-50:],'r.',label="$\lambda$ imprecise rounded")
+	plt.plot(range(max_iter-50,max_iter),lamb_precise*np.ones((50,1)),'k--',label="$\lambda$ precise")
+	plt.title(f"Different $\lambda$ values, word limit {lambda_word_limit:d}, step size {alpha:.1f}")
+	plt.xlabel("Number of iterations")
+	plt.ylabel("Values of $\lambda$")
+	plt.legend()
+	
 	plt.show()
 	

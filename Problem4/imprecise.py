@@ -30,11 +30,14 @@ def agent2(conn3,send_vec2,max_iter,A2,b2,xi_word_limit):
 	
 def do_imprecise(max_iter,alpha,A1,A2,b1,b2,vstar,lambda_word_limit,xi_word_limit,verbose=False):
 	error = np.zeros((max_iter,1))
-	lamb = 1.0
+	#lamb = 1.0
 	conn1, conn2 = Pipe()
 	conn3, conn4 = Pipe()
 	send_vec1, rec_vec1 = Pipe()
 	send_vec2, rec_vec2 = Pipe()
+	lamb = np.zeros((max_iter+1,1))
+	lamb[0] = 1.0
+	lamb_rounded = np.zeros((max_iter,1))
 	
 	begin = time.time()
 	d1 = Process(target=agent1,args=(conn1,send_vec1,max_iter,A1,b1,xi_word_limit))
@@ -43,13 +46,13 @@ def do_imprecise(max_iter,alpha,A1,A2,b1,b2,vstar,lambda_word_limit,xi_word_limi
 	d2.start()
 	for i in range(max_iter):
 		# Simulate word limit on message sent to Agents 1 and 2
-		lamb_bin = float2bin(lamb,lambda_word_limit)
+		lamb_bin = float2bin(lamb[i],lambda_word_limit)
+		lamb_rounded[i] = bin2float(lamb_bin)
 		conn2.send(lamb_bin)
 		conn4.send(lamb_bin)
 		xi1 = conn2.recv()
 		xi2 = conn4.recv()
-		lamb = lamb - alpha*(bin2float(xi1)-bin2float(xi2))
-		
+		lamb[i+1] = lamb[i] - alpha*(bin2float(xi1)-bin2float(xi2))
 		v1 = rec_vec1.recv()
 		v2 = rec_vec2.recv()
 		error[i] = np.linalg.norm(np.subtract(v1[:-1]+[v1[-1]/2+v2[0]/2]+v2[1:],vstar))
@@ -60,7 +63,7 @@ def do_imprecise(max_iter,alpha,A1,A2,b1,b2,vstar,lambda_word_limit,xi_word_limi
 	if verbose:
 		print("Dual decomposition in parallel takes %fs." %(end-begin))
 	
-	return error
+	return error,lamb[:-1],lamb_rounded
 	
 	
 	
